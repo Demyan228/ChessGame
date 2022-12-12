@@ -40,9 +40,9 @@ class ChessGameEngine:
         return self.board[pos[1]][pos[0]]
 
     def make_turn(self, pos1: Position, pos2: Position) -> None:
-        if is_valid(*pos1) and self.board[pos1[1]][pos1[0]] == 0:
+        if not is_valid(*pos1) and self.board[pos1[1]][pos1[0]] == 0:
             raise ValueError(f"вы передали pos1: {pos1}, это не верно езначение")
-        if is_valid(*pos2):
+        if not is_valid(*pos2):
             raise ValueError(f"вы передали pos2: {pos2}, это не верно езначение")
         f0 = self.board[pos1[1]][pos1[0]] * 1
         if f0 == 6:
