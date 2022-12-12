@@ -58,6 +58,8 @@ class ChessGameEngine:
             self._is_game_over = True
 
     def get_places(self, pos: Position) -> Tuple[Position]:
+        if not is_valid(*pos):
+            raise ValueError(f"вы передали pos: {pos}, это за пределами")
         if self.board[pos[1]][pos[0]] == 0:
             raise ValueError(f"вы передали pos: {pos}, это пустая клетка, ухади")
         king_stay = self._is_black_king_stay
