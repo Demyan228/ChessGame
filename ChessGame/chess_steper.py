@@ -1,81 +1,11 @@
-from chess_typing import Position, State
-from typing import Tuple
-from itertools import product
 from copy import deepcopy
+from itertools import product
 
 
 def is_valid(x, y):
     if x < 0 or y < 0 or x > 7 or y > 7:
         return False
     return True
-
-
-
-class ChessGameEngine:
-    figures = {1: "pawn", 2: "bishop", 3: "knight", 4: "rook", 5: "queen", 6: "king"}
-    start_board = """
-    43256234
-    11111111
-    00000000
-    00000000
-    00000000
-    00000000
-    11111111
-    43256234
-    """
-    start_board = start_board.strip().replace(" ", "")
-    start_board = start_board.split("\n")
-
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.board = self._create_board()
-        self._last_step = None
-        self._is_white_king_stay = True
-        self._is_black_king_stay = True
-        self._is_game_over = False
-
-    def is_game_over(self) -> bool:
-        return self._is_game_over
-
-    def get_state(self) -> State:
-        return deepcopy(self.board)
-
-    def get_figure(self, pos : Position) -> int:
-        return self.board[pos[1]][pos[0]]
-
-    def make_turn(self, pos1: Position, pos2: Position) -> None:
-        f0 = self.board[pos1[1]][pos1[0]] * 1
-        if f0 == 6:
-            self._is_white_king_stay = False
-        if f0 == -6:
-            self._is_black_king_stay = False
-        self._last_step = [*pos1, *pos2, self.board[pos1[1]][pos1[0]]]
-        self.board[pos1[1]][pos1[0]],\
-        self.board[pos2[1]][pos2[0]] = 0, self.board[pos1[1]][pos1[0]]
-        if f0 < 0 and ChessSteper.is_mat(self.board, self._last_step, self._is_white_king_stay, -1):
-            self._is_game_over = True
-        if f0 > 0 and ChessSteper.is_mat(self.board, self._last_step, self._is_black_king_stay, 1):
-            self._is_game_over = True
-
-    def get_places(self, pos: Position) -> Tuple[Position]:
-        king_stay = self._is_black_king_stay
-        if self.board[pos[1]][pos[0]] > 0:
-            king_stay = self._is_white_king_stay
-        return ChessSteper.get_places(self.board, pos[0], pos[1], self._last_step, king_stay)
-
-    def _create_board(self):
-        board = []
-        for i in range(8):
-            line = []
-            for j in range(8):
-                f = int(ChessGameEngine.start_board[i][j])
-                if i <=1:
-                    f *= -1
-                line.append(f)
-            board.append(line)
-        return board
 
 
 class ChessSteper:
@@ -241,11 +171,3 @@ class ChessSteper:
                 else:
                     res += ChessSteper.get_func(board, x, y)(board, x, y, c * -1)
         return res
-
-
-if __name__ == "__main__":
-    engine = ChessGameEngine()
-    engine.make_turn((5, 6), (5, 5))
-    engine.make_turn((2, 0), (7, 4))
-    print(*engine.get_state(), sep="\n")
-    print(engine.is_game_over())
